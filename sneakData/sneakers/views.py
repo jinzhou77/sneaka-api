@@ -10,7 +10,9 @@ class SneakersViewSet(viewsets.ModelViewSet):
     serializer_class = SneakerModelSerializer
 
     def get_queryset(self):
-        queryset = Detail.objects.all()
+        queryset = Detail.objects.filter(numberofsale__gt=0)
+        if self.request.query_params.get('brand') is not None:
+            return queryset.filter(brandname=self.request.query_params.get('brand'))
         return queryset
     
     def create(self, request):
