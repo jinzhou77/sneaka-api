@@ -24,7 +24,7 @@ class SneakersViewSet(viewsets.ModelViewSet):
         numberOfSale = request.data.get('numberofsale')
         averageSalePrice = request.data.get('averagesaleprice')
         styleCode = request.data.get('stylecode')
-        colorWay = request.data.get('coloway')
+        colorWay = request.data.get('colorway')
         ticker = request.data.get('ticker')
         releaseDate = request.data.get('releasedate')
         instance = Detail(url=url, brandname=brandName, stylename=styleName, imagepath=imagePath, retailprice = retailPrice, numberofsale = numberOfSale, averagesaleprice=averageSalePrice, stylecode=styleCode, colorway=colorWay, ticker=ticker, releasedate=releaseDate)
