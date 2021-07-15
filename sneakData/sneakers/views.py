@@ -10,35 +10,58 @@ class SneakersViewSet(viewsets.ModelViewSet):
     serializer_class = SneakerModelSerializer
 
     def get_queryset(self):
-        queryset = Detail.objects.filter(numberofsale__gt=0)
+        queryset = Detail.objects.filter(number_of_sale__gt=0)
         if self.request.query_params.get('brand') is not None:
-            return queryset.filter(brandname=self.request.query_params.get('brand'))
+            return queryset.filter(brand_name=self.request.query_params.get('brand'))
         return queryset
     
     def create(self, request):
         url = request.data.get('url')
-        brandName = request.data.get('brandname')
-        styleName = request.data.get('stylename')
-        imagePath = request.data.get('imagepath')
-        retailPrice = request.data.get('retailprice')        
-        numberOfSale = request.data.get('numberofsale')
-        averageSalePrice = request.data.get('averagesaleprice')
-        styleCode = request.data.get('stylecode')
-        colorWay = request.data.get('coloway')
+        brand_name = request.data.get('brand_name')
+        style_name = request.data.get('style_name')
+        image_path = request.data.get('image_path')
+        retail_price = request.data.get('retail_price')        
+        number_of_sale = request.data.get('number_of_sale')
+        averge_sale_price = request.data.get('average_sale_price')
+        style_code = request.data.get('style_code')
+        colorway = request.data.get('coloway')
         ticker = request.data.get('ticker')
-        releaseDate = request.data.get('releasedate')
-        instance = Detail(url=url, brandname=brandName, stylename=styleName, imagepath=imagePath, retailprice = retailPrice, numberofsale = numberOfSale, averagesaleprice=averageSalePrice, stylecode=styleCode, colorway=colorWay, ticker=ticker, releasedate=releaseDate)
+        release_date = request.data.get('release_date')
+        instance = Detail(url=url, brand_name=brand_name, style_name=style_name, image_path=image_path, retail_price = retail_price, number_of_sale = number_of_sale, averge_sale_price=averge_sale_price, style_code=style_code, colorway=colorway, ticker=ticker, release_date=release_date)
         instance.save()
         return Response({
-            'url': request.data.get('url') , 
-            'brandName': request.data.get('stylename'), 
-            'styleName': request.data.get('stylename'),
-            'imagePath': request.data.get('imagepath'),
-            'retailPrice':  request.data.get('retailprice'),
-            'numberofsale' : request.data.get('numberofsale'),
-            'averageSalePrice': request.data.get('averagesaleprice'),
-            'styleCode': request.data.get('stylecode'),
-            'colorWay': request.data.get('coloway'),
-            'ticker':request.data.get('ticker'),
-            'releaseDate': request.data.get('releasedate')
+            'url':  url, 
+            'brand_name': brand_name, 
+            'style_name': style_name,
+            'image_path': image_path,
+            'retail_price':  retail_price,
+            'number_of_sale' : number_of_sale,
+            'averge_sale_price': averge_sale_price,
+            'style_code': style_code,
+            'colorway': colorway,
+            'ticker': ticker,
+            'release_date': release_date,
             }, status=status.HTTP_201_CREATED)
+
+class SneakersTradingViewSet(viewsets.ModelViewSet):
+    serializer_class = SneakerTradingModelSerializer
+
+    def get_queryset(self):
+        queryset = Trades.objects.all()
+        return queryset
+
+    def create(self, request):
+        trade_name = request.data.get('trade_name')
+        ticker = request.data.get('ticker')
+        trade_date_time = request.data.get('trade_date_time')
+        trade_size = request.data.get('trade_size')
+        trade_price = request.data.get('trade_price')
+        instance = Trades(trade_name=trade_name, ticker=ticker, trade_date_time=trade_date_time, trade_size=trade_size, trade_price=trade_price)
+        instance.save()
+        return Response({
+            'trade_name': trade_name,
+            'ticker': ticker,
+            'trade_date_time': trade_date_time,
+            'trade_size': trade_size,
+            'trade_price': trade_price
+        })
