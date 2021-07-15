@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware'
 ]
 
-ALLOWED_HOSTS=['localhost']
+ALLOWED_HOSTS=['*', 'localhost']
 
 CORS_ORIGIN_ALLOW_ALL = False
 
