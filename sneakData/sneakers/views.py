@@ -17,7 +17,6 @@ class SneakersViewSet(viewsets.ModelViewSet):
     
     def create(self, request):
         url = request.data.get('url')
-<<<<<<< HEAD
         brand_name = request.data.get('brand_name')
         style_name = request.data.get('style_name')
         image_path = request.data.get('image_path')
@@ -26,16 +25,6 @@ class SneakersViewSet(viewsets.ModelViewSet):
         averge_sale_price = request.data.get('average_sale_price')
         style_code = request.data.get('style_code')
         colorway = request.data.get('coloway')
-=======
-        brandName = request.data.get('brandname')
-        styleName = request.data.get('stylename')
-        imagePath = request.data.get('imagepath')
-        retailPrice = request.data.get('retailprice')        
-        numberOfSale = request.data.get('numberofsale')
-        averageSalePrice = request.data.get('averagesaleprice')
-        styleCode = request.data.get('stylecode')
-        colorWay = request.data.get('colorway')
->>>>>>> 155297f589b3d06caf0bfaee6d2913c806cface5
         ticker = request.data.get('ticker')
         release_date = request.data.get('release_date')
         instance = Detail(url=url, brand_name=brand_name, style_name=style_name, image_path=image_path, retail_price = retail_price, number_of_sale = number_of_sale, averge_sale_price=averge_sale_price, style_code=style_code, colorway=colorway, ticker=ticker, release_date=release_date)
