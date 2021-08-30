@@ -5,12 +5,12 @@ from .models import *
 class SneakerModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Detail
-        fields = ('product_id', 'url', 'brand_name', 'model_name', 'style_name', 'number_sales_72_hours', 'ticker', 'image_path', 'release_date', 'retail_price', 'style_code', 'colorway', 'number_sales_12_months', 'price_premium', 'average_sales_price')
+        fields = ('product_id', 'brand', 'category', 'shoe', 'colorway', 'gender', 'image_url', 'thumb_url', 'release_date', 'below_retail', 'retail_price', 'style_id', 'ticker_symbol', 'url_key', 'title', 'market_annual_high','market_annual_low','market_sales_last_72hours','market_lowest_ask','market_lowest_ask_size','market_highest_bid', 'market_highest_bid_size')
 
-class SneakerTradingModelSerializer(serializers.ModelSerializer):
+class StockxModelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Trades
-        fields = ('trade_id', 'trade_name', 'ticker', 'trade_date_time', 'trade_size', 'trade_price')
+        model = Stockx
+        fields = ('analyze_id', 'sneaker', 'analyze_target_date', 'size', 'average_price', 'high_price', 'low_price', 'number_of_trades', 'publish_date')
 
 class SneakerEbayTradingModelSerializer(serializers.ModelSerializer):
     class Meta:
