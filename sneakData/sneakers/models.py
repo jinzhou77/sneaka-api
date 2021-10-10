@@ -27,7 +27,7 @@ class Detail(models.Model):
     market_highest_bid = models.DecimalField(null=True, decimal_places=2, max_digits=10) 
     market_highest_bid_size = models.CharField(max_length=255, null=True) 
 
-class Stockx(models.Model):
+class Analyze(models.Model):
     analyze_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     sneaker = models.ForeignKey(Detail, on_delete=models.CASCADE)
     analyze_target_date = models.CharField(max_length=255, null=False)
@@ -37,7 +37,14 @@ class Stockx(models.Model):
     low_price = models.CharField(max_length=255, null=True)
     number_of_trades = models.IntegerField()
     publish_date = models.CharField(max_length=255, null=False)
+    platform = models.CharField(max_length=255, null=False)
 
+class MonthlyAnalyze(models.Model):
+    platform = models.CharField(max_length=255, null=False)
+    monthly_high = models.CharField(max_length=255, null=True)
+    monthly_low = models.CharField(max_length=255, null=True)
+    monthly_trades = models.IntegerField()
+    
 class EbayTrades(models.Model):
     ebay_trade_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     ebay_trade_name = models.CharField(max_length=255, null=False)

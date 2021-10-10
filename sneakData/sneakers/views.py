@@ -1,10 +1,13 @@
 from __future__ import unicode_literals
 
+from django.db.models.aggregates import Count, Sum
+
 from .models import *
 from .serializers import *
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from datetime import date
+from django.db.models import Min, Max
 # Create your views here.
 
 
@@ -15,12 +18,12 @@ class SneakersViewSet(viewsets.ModelViewSet):
         queryset = Detail.objects.all()
 
         if self.request.query_params.get('product_id') is not None:
-            return queryset.filter(producdId=self.request.query_params.get('product_id'))
+            return queryset.filter(product_id=self.request.query_params.get('product_id'))
         if self.request.query_params.get('brand') is not None:
             return queryset.filter(brand=self.request.query_params.get('brand'))
         if self.request.query_params.get("popularity") is not None and self.request.query_params.get("popularity") == 'true':
             return queryset.order_by('-market_sales_last_72hours')
-        if self.request.query_params.get("recentRelease") is not None and self.request.query_params.get("recentRelease") == 'true':
+        if self.request.query_params.get("recent_release") is not None and self.request.query_params.get("recent_release") == 'true':
             today = date.today()
             queryset = queryset.filter(release_date__isnull=False)
             queryset = queryset.filter(release_date__lt=today)
@@ -103,14 +106,25 @@ class SneakersViewSet(viewsets.ModelViewSet):
             'market_highest_bid': market_highest_bid,
             'market_highest_bid_size': market_highest_bid_size
         }, status=status.HTTP_201_CREATED)
-
-
-class StockxViewSet(viewsets.ModelViewSet):
-    serializer_class = StockxModelSerializer
+class MonthlyAnalyzeViewSet(viewsets.ModelViewSet):
+    serializer_class = MonthlyAnalyzeModelSerializer
 
     def get_queryset(self):
-        queryset = Stockx.objects.all()
-        queryset = queryset.filter(analyze_target_date__range=["2021-08-29", "2021-09-02"])
+        queryset = Analyze.objects.filter(analyze_target_date__range=["2021-09-04", "2021-10-30"])
+        if self.request.query_params.get('size') is not None:
+            queryset = queryset.filter(size=self.request.query_params.get('size'))
+        queryset = queryset.values('platform').annotate(monthly_low=Min('low_price'), monthly_high=Max('high_price'), monthly_trades=Sum('number_of_trades'))
+        return queryset
+    
+class AnalyzeViewSet(viewsets.ModelViewSet):
+    serializer_class = AnalyzeModelSerializer
+
+    def get_queryset(self):
+        queryset = Analyze.objects.all()
+        queryset = queryset.order_by("analyze_target_date")
+        queryset = queryset.filter(analyze_target_date__range=["2021-09-04", "2021-10-30"])
+        if self.request.query_params.get('size') is not None:
+            queryset = queryset.filter(size=self.request.query_params.get('size'))
         return queryset
 
     def create(self, request):
@@ -122,19 +136,21 @@ class StockxViewSet(viewsets.ModelViewSet):
         low_price = request.data.get('low_price')
         number_of_trades = request.data.get('number_of_trades')
         publish_date = request.data.get('publish_date')
+        platform = request.data.get('platform')
         
-        instance = Stockx(sneaker=Detail.objects.get(product_id=sneaker_id), analyze_target_date=analyze_target_date, size=size,
-                                 average_price=average_price, high_price=high_price, low_price=low_price, number_of_trades=number_of_trades, publish_date=publish_date)
+        instance = Analyze(sneaker=Detail.objects.get(product_id=sneaker_id), analyze_target_date=analyze_target_date, size=size,
+                                 average_price=average_price, high_price=high_price, low_price=low_price, number_of_trades=number_of_trades, publish_date=publish_date, platform=platform)
         instance.save()
         return Response({
             'sneaker_id': sneaker_id,
             'analyze_target_date': analyze_target_date,
             'size': size,
-            'analyze_target_date': analyze_target_date,
+            'average_price': average_price,
             'high_price': high_price,
             'low_price': low_price,
             'number_of_trades': number_of_trades,
-            'publish_date': publish_date
+            'publish_date': publish_date,
+            'platform': platform
         }, status=status.HTTP_201_CREATED)
 
 
